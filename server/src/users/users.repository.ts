@@ -7,14 +7,11 @@ import { isValidObjectId, Model } from 'mongoose';
 import { User } from './users.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { Product } from 'src/products/product.schema';
+import { UpdateUserRoleDto } from './dtos/update-user-role.dto';
 
 @Injectable()
 export class UsersRepository {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
-    @InjectModel(Product.name) private productModel: Model<Product>,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async getUser(id: string) {
     if (!isValidObjectId(id)) {
@@ -82,5 +79,13 @@ export class UsersRepository {
       .findById(userId)
       .select('-__v -password')
       .populate('products', '-__v');
+  }
+
+  updateUserRole(userId: string, updateUserRoleDto: UpdateUserRoleDto) {
+    return this.userModel.findByIdAndUpdate(userId, {
+      $set: {
+        roles: [updateUserRoleDto.userRole],
+      },
+    });
   }
 }

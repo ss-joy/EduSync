@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { hash } from 'bcryptjs';
+import { UpdateUserRoleDto } from './dtos/update-user-role.dto';
 
 @Injectable()
 export class UsersService {
@@ -29,5 +30,9 @@ export class UsersService {
   async getProductsByUserId(userId: string) {
     await this.usersRepository.getUser(userId);
     return this.usersRepository.getProductsByUserId(userId);
+  }
+
+  updateUserRole(userId: string, updateUserRoleDto: UpdateUserRoleDto) {
+    return this.usersRepository.updateUserRole(userId, updateUserRoleDto);
   }
 }

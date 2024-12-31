@@ -14,6 +14,8 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { AddUserImageDto } from './dtos/add-user-image.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { UpdateUserRoleDto } from './dtos/update-user-role.dto';
+import { AdminGurd } from 'src/auth/admin.guard';
 
 @UseGuards(AuthGuard)
 @Controller('user')
@@ -49,8 +51,12 @@ export class UsersController {
     return this.usersService.addUserImage(id, addUserImageDto.imageLink);
   }
 
-  @Get(':id/products')
-  getProductsByUserId(@Param('id') id: string) {
-    return this.usersService.getProductsByUserId(id);
+  @UseGuards(AdminGurd)
+  @Patch(':id/role')
+  updateUserRole(
+    @Param('id', ValidationPipe) userId: string,
+    @Body(ValidationPipe) updateUserRoleDto: UpdateUserRoleDto,
+  ) {
+    return this.usersService.updateUserRole(userId, updateUserRoleDto);
   }
 }
